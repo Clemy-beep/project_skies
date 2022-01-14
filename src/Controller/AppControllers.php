@@ -80,25 +80,33 @@ class AppController
     //     }
     //     return $flight;
     // }
-    // public static function createTicket(Passager $pass, ArrayCollection $flights): Ticket
-    // {
-    //     $em = EntityManagerHelper::getEntityManager();
-    //     $passager = $pass;
+    public static function createTicket(): Ticket
+    {
+        $em = EntityManagerHelper::getEntityManager();
+        $departure = new Airport('New York', "american");
+        $arrival = new Airport('Casablanca', "moroccan");
 
+        $client = new Client("Paul", "Pot", "french");
+        $passager = new Passager('Odile', 'Soeur', 8741, 'german');
+        $passager->setIsBuyer(false);
+        $flight = new Flight(741, $departure, $arrival, new DateTime(), new DateTime());
+        $flights = new ArrayCollection([$flight]);
 
+        $ticket = new Ticket($passager, $flights);
 
-    //     $flights = new ArrayCollection([]);
-
-    //     $ticket = new Ticket($passager, $flights);
-    //     try {
-    //         $em->persist($passager);
-    //         $em->persist($ticket);
-    //         $em->flush();
-    //     } catch (Exception $e) {
-    //         $code =  $e->getCode();
-    //         $message =  $e->getMessage();
-    //         echo "Error $code : $message ";
-    //     }
-    //     return $ticket;
-    // }
+        try {
+            $em->persist($departure);
+            $em->persist($arrival);
+            $em->persist($client);
+            $em->persist($passager);
+            $em->persist($flight);
+            $em->persist($ticket);
+            $em->flush();
+        } catch (Exception $e) {
+            $msg = $e->getMessage();
+            $code = $e->getCode();
+            echo "Error $code : $msg";
+        }
+        return $ticket;
+    }
 }

@@ -11,21 +11,4 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 require __DIR__.'/vendor/autoload.php';
 
-$departure = new Airport('New York', "american");
-$arrival = new Airport('Casablanca', "moroccan");
-
-$client = new Client("Paul", "Pot", "french");
-$passager = new Passager('Odile', 'Soeur', 8741, 'german');
-$passager->setIsBuyer(false);
-$flight = new Flight(741, $departure, $arrival, new DateTime(), new DateTime());
-$flights = new ArrayCollection([$flight]);
-
-$ticket = new Ticket($passager, $flights);
-
-$entityManager->persist($departure);
-$entityManager->persist($arrival);
-$entityManager->persist($client);
-$entityManager->persist($passager);
-$entityManager->persist($flight);
-$entityManager->persist($ticket);
-$entityManager->flush();
+AppController::createTicket();
