@@ -61,7 +61,7 @@ final class Versions
   'symfony/service-contracts' => 'v3.0.0@36715ebf9fb9db73db0cb24263c79077c6fe8603',
   'symfony/string' => 'v6.0.2@bae261d0c3ac38a1f802b4dfed42094296100631',
   'symfony/var-exporter' => 'v6.0.0@32cf62f12d35d441da1ca4a4c0fc1cd5f2a207af',
-  'app/skies' => '1.0.0+no-version-set@',
+  'app/skies' => 'dev-main@2131726ef6233edb39bd2b34c42d7d35aacbdbf4',
 );
 
     private function __construct()
