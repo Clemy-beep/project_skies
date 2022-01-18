@@ -24,6 +24,11 @@ class Router
         return $this->add($path, $callable, $name, 'POST');
     }
 
+    public function put($path, $callable, $name = null)
+    {
+        return $this->add($path, $callable, $name, 'PUT');
+    }
+
     private function add($path, $callable, $name, $method)
     {
         $route = new Route($path, $callable);
@@ -40,15 +45,16 @@ class Router
     public function run()
     {
         if (!isset($this->routes[$_SERVER['REQUEST_METHOD']])) {
+            echo "<pre>" . print_r($_SERVER, true) . "</pre>";
             throw new RouterException('REQUEST_METHOD does not exist');
         }
         foreach ($this->routes[$_SERVER['REQUEST_METHOD']] as $route) {
             if ($route->match($this->url)) {
                 return $route->call();
             }
-            echo "<pre>".print_r($this->routes,true)."</pre>";
-            throw new RouterException('No matching routes');
         }
+        // echo "<pre>" . print_r($this->routes, true) . "</pre>";
+        // throw new RouterException('No matching routes');
     }
 
     public function url($name, $params = [])

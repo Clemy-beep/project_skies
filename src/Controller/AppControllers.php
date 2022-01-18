@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controllers;
+namespace App\Controller;
 
 use App\Entity\Airport;
 use App\Entity\Client;
@@ -80,33 +80,130 @@ class AppController
     //     }
     //     return $flight;
     // }
-    public static function createTicket(): Ticket
+    // public static function createTicket(): Ticket
+    // {
+    //     $em = EntityManagerHelper::getEntityManager();
+    //     $departure = new Airport('New York', "american");
+    //     $arrival = new Airport('Casablanca', "moroccan");
+
+    //     $client = new Client("Paul", "Pot", "french");
+    //     $passager = new Passager('Odile', 'Soeur', 8741, 'german');
+    //     $passager->setIsBuyer(false);
+    //     $flight = new Flight(741, $departure, $arrival, new DateTime(), new DateTime());
+    //     $flights = new ArrayCollection([$flight]);
+
+    //     $ticket = new Ticket($passager, $flights);
+
+    //     try {
+    //         $em->persist($departure);
+    //         $em->persist($arrival);
+    //         $em->persist($client);
+    //         $em->persist($passager);
+    //         $em->persist($flight);
+    //         $em->persist($ticket);
+    //         $em->flush();
+    //     } catch (Exception $e) {
+    //         $msg = $e->getMessage();
+    //         $code = $e->getCode();
+    //         echo "Error $code : $msg";
+    //     }
+    //     return $ticket;
+    // }
+    public static function index()
+    {
+        include("./src/View/Homepage.php");
+    }
+
+    public static function showForm()
+    {
+        include("./src/View/FormVIew.php");
+    }
+
+    public static function formCheck()
     {
         $em = EntityManagerHelper::getEntityManager();
-        $departure = new Airport('New York', "american");
-        $arrival = new Airport('Casablanca', "moroccan");
+        if (isset($_POST["firstname"], $_POST['lastname'], $_POST['nationality'])) {
+            var_dump($_POST);
+            $firstname = $_POST['firstname'];
+            $lastname = $_POST['lastname'];
+            $nationality = $_POST['nationality'];
+            $client = new Client($firstname, $lastname, $nationality);
+            try {
+                $em->persist($client);
+                $em->flush();
+            } catch (Exception $e) {
+                $msg = $e->getMessage();
+                $code = $e->getCode();
+                echo "Error $code : $msg";
+            }
+        } else throw new Exception("Empty POST array", 01);
+        return $client;
+    }
 
-        $client = new Client("Paul", "Pot", "french");
-        $passager = new Passager('Odile', 'Soeur', 8741, 'german');
-        $passager->setIsBuyer(false);
-        $flight = new Flight(741, $departure, $arrival, new DateTime(), new DateTime());
-        $flights = new ArrayCollection([$flight]);
+    public static function showClient(string $id)
+    {
+        include('./src/View/UpdateClient.php');
+    }
 
-        $ticket = new Ticket($passager, $flights);
+    public static function updateClient($id)
+    {
+        $em = EntityManagerHelper::getEntityManager();
+        if (isset($_POST["firstname"], $_POST['lastname'], $_POST['nationality'])) {
+            $client = $em->getRepository(Client::class)->find($id);
+            $client->setFirstName($_POST['firstname']);
+            $client->setLastName($_POST['lastname']);
+            $client->setNationality($_POST['nationality']);
+            try {
+                $em->flush();
+                echo "Client $id updated !";
+            } catch (Exception $e) {
+                $msg = $e->getMessage();
+                $code = $e->getCode();
+                echo "Error $code : $msg";
+            }
+        } else throw new Exception("Empty POST array", 01);
 
+        return $client;
+    }
+
+    public static function deleteClient($id)
+    {
+        $em = EntityManagerHelper::getEntityManager();
+        $query = $em->createQueryBuilder();
+        $query->select('client')
+            ->from('App\Entity\Client', 'client')
+            ->where('client.id = :id');
+        $query->setParameter('id', $id);
+        $client = $query->getQuery()->getResult();
+        $client = $client[0];
         try {
-            $em->persist($departure);
-            $em->persist($arrival);
-            $em->persist($client);
-            $em->persist($passager);
-            $em->persist($flight);
-            $em->persist($ticket);
+            $em->remove($client);
             $em->flush();
+            echo "Client $id removed !";
+            echo '<a href="http://127.0.0.6/">Back to home</a>';
         } catch (Exception $e) {
             $msg = $e->getMessage();
             $code = $e->getCode();
             echo "Error $code : $msg";
         }
-        return $ticket;
+    }
+
+    public static function fetchClientInfos($id)
+    {
+        $em = EntityManagerHelper::getEntityManager();
+        try {
+            $query = $em->createQueryBuilder();
+            $query->select('client')
+                ->from('App\Entity\Client', 'client')
+                ->where('client.id = :id');
+            $query->setParameter('id', $id);
+            $client = $query->getQuery()->getResult();
+            $client = $client[0];
+        } catch (Exception $e) {
+            $msg = $e->getMessage();
+            $code = $e->getCode();
+            echo "Error $code : $msg";
+        }
+        return $client;
     }
 }

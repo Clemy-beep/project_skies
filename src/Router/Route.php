@@ -2,12 +2,13 @@
 
 namespace App\Router;
 
+
 class Route
 {
 
     private $path;
     private $callable;
-    private $matches = [];
+    private array $matches = [];
     private $params = [];
 
     public function __construct($path, $callable)
@@ -16,11 +17,10 @@ class Route
         $this->callable = $callable;
     }
 
-    public function match($url) : bool
+    public function match($url): bool
     {
         $url = trim($url, '/');
         $path = preg_replace_callback('#:([\w]+)#', [$this, 'paramMatch'], $this->path);
-        $path = str_replace('/', '/', $path);
         $regex = "#^$path$#i";
         if (!preg_match($regex, $url, $matches)) {
             return false;
@@ -36,7 +36,7 @@ class Route
         return $this;
     }
 
-    private function paramMatch($match) : string
+    private function paramMatch($match): string
     {
         if (isset($this->params[$match[1]])) {
             return '(' . $this->params[$match[1]] . ')';
@@ -48,9 +48,9 @@ class Route
     {
         if (is_string($this->callable)) {
             $params = explode('#', $this->callable);
-            $controller = "App\\Controller\\" . $params[0] . "Controller";
+            $controller = "App\\Controller\\" . $params[0] . "AppController";
             $controller = new $controller();
-            return call_user_func_array([$controller, $params[1]], $this->matches);
+            return call_user_func_array([$controller, $params[0]], $this->matches);
         } else {
             return call_user_func_array($this->callable, $this->matches);
         }

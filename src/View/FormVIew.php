@@ -1,11 +1,12 @@
 <?php
 
+use App\Controllers\AppController;
 use App\Entity\Client;
+use App\Router\Router;
 
-if (isset($_POST['firstname'], $_POST['lastname'], $_POST['nationality'])) {
-    $client = new Client($_POST['firstname'], $_POST['lastname'], $_POST['nationality']);
-    var_dump($client);
-} else throw new Exception('Please fill all fields', 01);
+
+
+
 ?>
 
 <!DOCTYPE html>
@@ -19,7 +20,7 @@ if (isset($_POST['firstname'], $_POST['lastname'], $_POST['nationality'])) {
 </head>
 
 <body>
-    <form action="<?php $_PHP_SELF ?>" method="post">
+    <form method="post">
         <label for="firstname">Firstname</label>
         <input type="text" name="firstname" required>
         <label for="lastname">Lastname</label>
@@ -31,3 +32,7 @@ if (isset($_POST['firstname'], $_POST['lastname'], $_POST['nationality'])) {
 </body>
 
 </html>
+
+<?php
+
+?>
